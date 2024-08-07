@@ -1,11 +1,14 @@
 package dev.cryss.forum.controller.dto;
 
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import dev.cryss.forum.modelo.Topico;
 import org.springframework.data.domain.Page;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
+
 
 public class TopicoDto {
 

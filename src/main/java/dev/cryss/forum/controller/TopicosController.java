@@ -8,6 +8,7 @@ import dev.cryss.forum.modelo.Topico;
 import dev.cryss.forum.repository.CursoRepository;
 import dev.cryss.forum.repository.TopicoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -40,20 +41,37 @@ public class TopicosController {
 	
 	@Autowired
 	private CursoRepository cursoRepository;
-	
+
+
+//	@GetMapping
+//	@Cacheable(value = "listaDeTopicos")
+//	public Page<TopicoDto> lista(@RequestParam(required = false) String nomeCurso,
+//								@PageableDefault(sort =  "id", direction = Sort.Direction.DESC) Pageable paginacao) {
+//
+//		if (nomeCurso == null) {
+//			Page<Topico> topicos = topicoRepository.findAll(paginacao);
+//			return TopicoDto.converter(topicos);
+//		} else {
+//			Page<Topico> topicos = topicoRepository.findByCursoNome(nomeCurso, paginacao);
+//			return TopicoDto.converter(topicos);
+//		}
+//	}
+
+
 	@GetMapping
-	public Page<TopicoDto> lista(@RequestParam(required = false) String nomeCurso,
-								@PageableDefault(sort =  "id", direction = Sort.Direction.DESC) Pageable paginacao) {
+	@Cacheable(value = "listaDeTopicos")
+	public List<Topico> lista(@RequestParam(required = false) String nomeCurso) {
 
 		if (nomeCurso == null) {
-			Page<Topico> topicos = topicoRepository.findAll(paginacao);
-			return TopicoDto.converter(topicos);
+			List<Topico> topicos = topicoRepository.findAll();
+			return topicos;
 		} else {
-			Page<Topico> topicos = topicoRepository.findByCursoNome(nomeCurso, paginacao);
-			return TopicoDto.converter(topicos);
+			List<Topico> topicos = topicoRepository.findAll();
+			return topicos;
 		}
 	}
-	
+
+
 	@PostMapping
 	@Transactional
 	public ResponseEntity<TopicoDto> cadastrar(@RequestBody @Valid TopicoForm form, UriComponentsBuilder uriBuilder) {
